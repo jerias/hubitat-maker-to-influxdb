@@ -50,7 +50,6 @@ const boolTypes = {
     tamper: { truth: 'detected', },
     thermostatMode: { truth: 'off', },
     thermostatFanMode: { truth: 'off', },
-    thermostatOperatingState: { truth: 'heating', },
     thermostatSetpointMode: { truth: 'followSchedule', },
     touch: { truth: 'touched', },
     optimisation: { truth: 'active', },
@@ -85,7 +84,7 @@ function new_session(hubName, hub, config) {
             // being run could be bad, so perhaps is ok?
             poll_timers[evt_uniq_string] = null;
             processEvt(evt, "repeat");
-        }, config.local_config.poll_interval*1000); 
+        }, config.local_config.poll_interval*1000);
 
         // Build data string to send to InfluxDB:
         //  Format: <measurement>[,<tag_name>=<tag_value>] field=<field_value>
@@ -110,6 +109,20 @@ function new_session(hubName, hub, config) {
 
         if (isBoolType(evt.name)) {
             data += hubDefaultBool(evt.name, evt.value, boolTypes[evt.name].truth);
+        }
+        else if ('thermostatOperatingState' == evt.name) {
+            var stateVal = '';
+            if ('heating' == evt.value) {
+                stateVal = '1i';
+            }
+            else if ('cooling' == evt.value) {
+                stateVal = '1i';
+            }
+            else {
+                stateVal = '0i';
+            }
+            q_value = '"' + evt.value + '"';
+            data += `,unit=${evt.name} value=${q_value},valueBinary=${stateVal}`;
         }
         else if ('energyDuration' == evt.name) {
             unit = evt.value.split(" ")[1];
@@ -155,7 +168,7 @@ function new_session(hubName, hub, config) {
         // Post data to InfluxDB:
         postToInfluxDB(data);
     }
-    
+
     function postToInfluxDB(data) {
         postQueue.push(data);
 
