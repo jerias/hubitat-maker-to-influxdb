@@ -124,6 +124,14 @@ function new_session(hubName, hub, config) {
             q_value = '"' + evt.value + '"';
             data += `,unit=${evt.name} value=${q_value},valueBinary=${stateVal}`;
         }
+        else if ('hubWatchdogData' == deviceName) {
+            if ('lastDataPoint1' == evt.name) {
+                data += `,unit=null value=${evt.value}`;
+            }
+            else {
+                return;
+            }
+        }
         else if ('energyDuration' == evt.name) {
             unit = evt.value.split(" ")[1];
             value = evt.value.split(" ")[0];
