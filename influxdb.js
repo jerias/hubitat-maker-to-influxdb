@@ -151,7 +151,7 @@ function new_session(hubName, hub, config) {
         }
         // Catch any other event with a string value that hasn't been handled:
         else if (evt.value.match(/[^0-9\.,-]/)) { // match if any characters are not digits, period, comma, or hyphen.
-            console.log(hubName, "handleEvent(): Found a string value that's not explicitly handled: Device Name: ${deviceName}, Event Name: ${evt.name}, Value: ${evt.value}","warn");
+            console.log(hubName, "handleEvent(): Found a string value that's not explicitly handled: Device Name: " + deviceName + ", Event Name: " + evt.name + ", Value: " + evt.value,"warn");
             var numMatch = evt.value.match(/[0-9.,-]+/);
             var txtMatch = evt.value.match(/[^0-9.,-]+/);
             if (numMatch && txtMatch) {
@@ -159,7 +159,12 @@ function new_session(hubName, hub, config) {
                 const txt = txtMatch[0];
                 value = '"' + num + '"';
                 data += `,unit=${txt} value=${value}`;
-            } else {
+            }
+            else if (!numMatch) {
+                value = '"' + evt.value + '"';
+                data += ` value=${value}`;
+            }
+            else {
                 data += ` value=${evt.value}`;
             }
         }
