@@ -204,6 +204,7 @@ function new_session(hubName, hub, config) {
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             };
 
+            console.log("\n--------------------------------------------------------------------------------");
             const req = http.request(options, (res) => {
                 stats.influxDBPosts++;
 
@@ -217,8 +218,8 @@ function new_session(hubName, hub, config) {
                     console.log(hubName, `BODY: ${chunk}`);
                 });
                 res.on('end', () => {
-                    //console.log(hubName, "Sent:", sendData.length);
-                    //console.log(hubName, 'No more data in response.');
+                    console.log(hubName, "Sent:", sendData.length);
+                    console.log(hubName, 'No more data in response.');
                 });
             });
 
@@ -228,7 +229,7 @@ function new_session(hubName, hub, config) {
 
             req.write(sendData.join("\n"));
             req.end();
-        }, 5000);
+        }, config.local_config.send_interval*1000);
     }
     return {
         processEvt: processEvt,

@@ -17,6 +17,7 @@ var config = {
         influxdb_db_name: 'hubitatMaker',
         local_url: 'http://192.168.7.94',
         poll_interval: 1800,
+        send_interval: 5000,
     },
     hubs: {
     }

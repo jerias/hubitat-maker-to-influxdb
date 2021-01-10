@@ -64,6 +64,7 @@ function instance(hubName, hub, port) {
     });
 
     function process_event_stats(evt, repeat) {
+        console.log("\n--------------------------------------------------------------------------------");
         console.log(hubName, 'json:', evt);
         stats.deviceEvents[evt.displayName] = (stats.deviceEvents[evt.displayName] || 0) + 1;
         stats.measurementEvents[evt.name] = (stats.measurementEvents[evt.name] || 0) + 1;
